@@ -5,7 +5,7 @@ import numpy as np
 
 # hyperparameter
 lr = 0.01
-epochs = 500
+epochs = 5000
 
 # Create *known* parameters
 ideal_K0 = 22.0
@@ -18,32 +18,45 @@ end = 1000
 step = 0.1
 
 X = torch.arange(start, end, step).unsqueeze(dim=1)
-y = ideal_K * (1 - np.exp(-X / ideal_T)) + ideal_K0
+y = ideal_K * (1 - torch.exp(-X / ideal_T)) + ideal_K0
+
+# ensure both are float tensors
+X = X.float()
+y = y.float()
 
 
-# create training and testing data
-train_split = int(0.8 * len(X))
-X_train, y_train = X[:train_split], y[:train_split]
-X_test, y_test = X[train_split:], y[train_split:]
-
-
+# # create training and testing data
+# train_split = int(0.8 * len(X))
+# X_train, y_train = X[:train_split], y[:train_split]
+# X_test, y_test = X[train_split:], y[train_split:]
 '''
-Build model
+    change here to 80% equidistant data
 '''
+# Create equidistant training indices (80% of total)
+num_train = int(0.8 * len(X))
+
+# Select evenly spaced indices of training
+train_indices = torch.linspace(0, len(X)-1, num_train).long()
+
+# Ctrate boolean mask for train/test split
+mask = torch.zeros(len(X), dtype=torch.bool)
+mask[train_indices] = True
+
+# Apply mask to get train/test data
+X_train, y_train = X[mask], y[mask]
+X_test, y_test = X[~mask], y[~mask]
+
+
 
 # Create linear regression model class
 class myModel(nn.Module): # <- almost everything in pytorch inherhits from nn.Module
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.weights_K = nn.Parameter(torch.tensor([4.0]) + 0.5 * torch.randn(1,
-                                                                              requires_grad=True,
-                                                                              dtype=torch.float))
-        self.weights_T = nn.Parameter(torch.tensor([250.0]) + 50.0 * torch.randn(1,
-                                                                              requires_grad=True,
-                                                                              dtype=torch.float))
-        self.bias_K0 = nn.Parameter(torch.tensor([18.0]) + 2.0 * torch.randn(1,
-                                                                              requires_grad=True,
-                                                                              dtype=torch.float))
+        self.weights_K = nn.Parameter(torch.randn(1) * 8.0) # K in [0, 8)
+        self.weights_T = nn.Parameter(torch.randn(1) * 500.0) # T in [0, 500)
+        self.bias_K0 = nn.Parameter(19.0 + torch.randn(1) * 4.0) # K0 in [19, 23)
+
+        self.softplus = nn.Softplus()  # ensures positive K and T
 
     # Forward method to define the computation in the model
     def forward(self, x: torch.Tensor) -> torch.Tensor: # x is the input data
@@ -70,10 +83,16 @@ model_0_params_list = model_0.state_dict()
 
 
 # Setup a loss function
-loss_fn = nn.L1Loss()
+'''
+    change to nn.MSELoss(), expect more smooth curve
+'''
+loss_fn = nn.MSELoss()
 
 # Setup a optimizer (stochastic gradient descent)
-optimizer = torch.optim.SGD(params=model_0.parameters(),
+'''
+    change potimizer to torch.optim.Adam
+'''
+optimizer = torch.optim.Adam(params=model_0.parameters(),
                             lr=lr) # lr = learning rate = hyperparameter you can set
 
 
@@ -119,7 +138,7 @@ for epoch in range(epochs):
         test_loss = loss_fn(test_preds, y_test)
 
     # print what's happing 
-    if epoch % 20 == 0:
+    if epoch % 50 == 0:
         epoch_count.append(epoch)
         train_loss_values.append(loss.item())
         test_loss_values.append(test_loss.item())

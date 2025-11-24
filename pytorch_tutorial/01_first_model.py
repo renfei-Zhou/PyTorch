@@ -248,7 +248,7 @@ plt.ylabel("Epochs")
 
 plt.legend(prop={"size": 14})
 plt.grid(True)
-# plt.show()
+plt.show()
 
 
 
