@@ -413,5 +413,40 @@ for epoch in range(epochs):
         print(f"Epoch: {epoch}  |   Loss: {loss:.5f}, Acc: {acc:.2f}%    |   Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
 
 
+### 5.1 Preparing data to see if our model can fit a straight line
+'''
+    One way to troubleshoot to a large problem is to test out a small problem.
+'''
+
+# Create some data 
+weight = 0.7
+bias = 0.3
+start = 0
+end = 1
+step = 0.01
+
+# Create data
+X_regression = torch.arange(start, end, step).unsqueeze(dim=1)
+y_regression = weight * X_regression + bias     # linear regeression formular
+
+# Check the data
+print(f"length of X_regression: {len(X_regression)}  \nfirst 5 X_regression: \n{X_regression[:5]} \nfirst 5 y_regression: \n{y_regression[:5]}")
+
+# Create train and test splits
+train_split = int(0.8 * len(X_regression))
+X_train_regression, y_train_regression = X_regression[:train_split], y_regression[:train_split]
+X_test_regression, y_test_regression = X_regression[train_split:], y_regression[train_split:]
+
+# Check the length of each
+print(f"length X_train_reg: {len(X_train_regression)}")
+
+
+
+
+
+
+
+
+
 
 debug =1
