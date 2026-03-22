@@ -441,12 +441,51 @@ X_test_regression, y_test_regression = X_regression[train_split:], y_regression[
 print(f"length X_train_reg: {len(X_train_regression)}")
 
 
+### Adjusting 'model_1' to fit a straight line
+# same architecture as model_1 (but using nn.Squential())
+model_2 = nn.Sequential(
+    nn.Linear(in_features=1, out_features=10),
+    nn.Linear(in_features=10, out_features=10),
+    nn.Linear(in_features=10, out_features=1)
+).to(device)
+
+print(f"\nmodel_2: \n{model_2}")
+
+# Loss and optimizer
+loss_fn = nn.L1Loss()
+optimizer = torch.optim.SGD(params=model_2.parameters(), 
+                            lr=0.01)
+
+
+# Train the model
+torch.manual_seed(42)
+# torch.cuda.manual_seed(42)    # for gpu
+# set the number of the epochs
+epochs = 1000
+# put the data on the target device
+X_train_regression, y_train_regression = X_train_regression.to(device), y_train_regression.to(device)
+X_test_regression, y_test_regression = X_test_regression.to(device), y_test_regression.to(device)
+
+# Training
+for epoch in range(epochs):
+    y_pred = model_2(X_train_regression)
+    loss = loss_fn(y_pred, y_train_regression)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    # Testing
+    model_2.eval()
+    with torch.inference_mode():
+        test_pred = model_2(X_test_regression)
+        test_loss = loss_fn(test_pred, y_test_regression)
+
+    # Print out what's happening
+    if epoch % 100 == 0:
+        print(f"Epoch: {epoch} | Loss: {loss:.5f} | Test loss: {test_loss:.5f}")
 
 
 
 
-
-
-
-
+# 11_46_00 (PyTorch for Deep Learning & Machine Learning – Full Course)
 debug =1
