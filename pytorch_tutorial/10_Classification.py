@@ -488,4 +488,6 @@ for epoch in range(epochs):
 
 
 # 11_46_00 (PyTorch for Deep Learning & Machine Learning – Full Course)
+# test for new laptop
+new_debug = 1
 debug =1
