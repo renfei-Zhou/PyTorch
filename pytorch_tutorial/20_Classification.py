@@ -452,7 +452,7 @@ model_2 = nn.Sequential(
 print(f"\nmodel_2: \n{model_2}")
 
 # Loss and optimizer
-loss_fn = nn.L1Loss()
+loss_fn = nn.L1Loss()   # MAE loss with regression data
 optimizer = torch.optim.SGD(params=model_2.parameters(), 
                             lr=0.01)
 
@@ -487,7 +487,40 @@ for epoch in range(epochs):
 
 
 
-# 11_46_00 (PyTorch for Deep Learning & Machine Learning – Full Course)
-# test for new laptop
-new_debug = 1
+    # Visualize
+    # Turn on the evaluation mode
+    model_2.eval()
+
+    # Make predictions (inference)
+    with torch.inference_mode():
+        y_preds = model_2(X_test_regression)
+
+# Plot data and predictions
+plot_predictions(train_data=X_train_regression,
+                train_labels=y_train_regression,
+                test_data=X_test_regression,
+                test_labels=y_test_regression,
+                predictions=y_preds)
+# plt.show()
+
+
+'''
+    Now, the modelV2 proofs that it is cabable of dealing with the linear data.
+    But our problem is, the data set is a circle, that's why the 'nn.Linear' never give the correct dirction of training.
+    So a non-linear modle is needed.
+'''
+
+### 6. The missing piece: non-linearity
+'''
+    "What patterns could you draw if you were given an infinite amount of a straight and non-straight lines?"
+    Or in machine learning terms, an infinite (but really it is finite) of linear and non-linear functions?
+'''
+### 6.1 Recreating non-linear data (the red and blue circles)
+# Make and plot data
+
+
+
+
+
+# 11_51_27 (PyTorch for Deep Learning & Machine Learning – Full Course)
 debug =1
