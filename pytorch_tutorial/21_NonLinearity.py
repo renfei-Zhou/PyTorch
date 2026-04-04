@@ -25,7 +25,7 @@ X, y = make_circles(n_samples,
                     noise=0.03,
                     random_state=42)
 
-plt.scatter(X[:,0], X[:,1], c=y, cmap=plt.cm.RdYlBu)
+# plt.scatter(X[:,0], X[:,1], c=y, cmap=plt.cm.RdYlBu)
 # plt.show()
 
 # Convert data to tensors and then to train and test splits
@@ -137,12 +137,12 @@ for epoch in range(epochs):
 
 
 
-### 6.4 Evaluating a model trained with non-linear activation functions
+### 6.4 Evaluating a model trained with non-linear activation functions (just check the result, see if it's fitted)
 # Make predictions
 model_3.eval()
 with torch.inference_mode():
     y_preds = torch.round(torch.sigmoid(model_3(X_test))).squeeze()
-print(f"\nCheck size: \ny_preds:{y_preds[:10]}\ny_test:{y_test[:10]}")
+print(f"\nCheck result: \ny_preds:{y_preds[:10]}\ny_test:{y_test[:10]}")
 
 # Plot decision boundries and compare models
 plt.figure(figsize=(12, 12))
@@ -160,11 +160,4 @@ plt.title("Test(model_3)")
 plot_decision_boundary(model_3, X_test, y_test)
 plt.show()
 
-
-
-
-
-
-# 11_51_27 (PyTorch for Deep Learning & Machine Learning – Full Course)
-# 12_27_09 (PyTorch for Deep Learning & Machine Learning – Full Course)
 debug =1
