@@ -1,3 +1,14 @@
+# Add path of all files
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+
+# Load linear model_1
+from models.models_loading import load_model, model_1_Linear
+model_1 = load_model(model_1_Linear, "models/model_1_Linear.pth")
+
+
+
 ### 6. The missing piece: non-linearity
 '''
     "What patterns could you draw if you were given an infinite amount of a straight and non-straight lines?"
@@ -84,7 +95,7 @@ else:
     request = requests.get("http://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/main/helper_functions.py")
     with open("helper_functions.py", "wb") as f:
         f.write(request.content)
-from helper_functions import accuracy_fn
+from helper_functions import accuracy_fn, plot_decision_boundary
 
 # Loop through data
 epochs = 1000
@@ -123,6 +134,31 @@ for epoch in range(epochs):
     # Print out what's happenin'
     if epoch % 100 == 0:
         print(f"Epoch: {epoch}  |   Loss: {loss:.4f}, Acc: {acc:.2f}%    |   Test_loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}%")
+
+
+
+### 6.4 Evaluating a model trained with non-linear activation functions
+# Make predictions
+model_3.eval()
+with torch.inference_mode():
+    y_preds = torch.round(torch.sigmoid(model_3(X_test))).squeeze()
+print(f"\nCheck size: \ny_preds:{y_preds[:10]}\ny_test:{y_test[:10]}")
+
+# Plot decision boundries and compare models
+plt.figure(figsize=(12, 12))
+plt.subplot(2,2,1)
+plt.title("Train(model_1)")
+plot_decision_boundary(model_1, X_train, y_train)
+plt.subplot(2,2,2)
+plt.title("Test(model_1)")
+plot_decision_boundary(model_1, X_test, y_test)
+plt.subplot(2,2,3)
+plt.title("Train(model_3)")
+plot_decision_boundary(model_3, X_train, y_train)
+plt.subplot(2,2,4)
+plt.title("Test(model_3)")
+plot_decision_boundary(model_3, X_test, y_test)
+plt.show()
 
 
 

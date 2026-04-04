@@ -509,4 +509,16 @@ plt.show()
     So a non-linear modle is needed.
     Check file '21_NonLinearity.py' for following code...
 '''
+
+### saving PyTorch models
+MODEL_PATH = Path("models")
+MODEL_PATH.mkdir(parents=True, exist_ok=True)
+
+MODEL_NAME = "model_1_Linear.pth"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
+
+print(f"Saving model to: {MODEL_SAVE_PATH}")
+torch.save(obj=model_1.state_dict(),
+           f=MODEL_SAVE_PATH)
+
 debug =1
