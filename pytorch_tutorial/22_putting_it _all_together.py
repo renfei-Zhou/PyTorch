@@ -191,13 +191,23 @@ y_preds = torch.argmax(y_pred_probs, dim=1)
 
 
 
-### 9. A few more classification matrics...
+### 9. A few more classification matrics... (to evaluate our classification model)
+'''
+    * Accuracy - out of 100 samples, how many does our model get right?
+    * Precision
+    * Recall
+    * F1-score
+    * Confusion matrix
+    * Classification report
+'''
+from torchmetrics import Accuracy
+
+# Setup metric
+torchmetric_acc = Accuracy(task="multiclass", num_classes=NUM_CLASSES).to(device)
+
+# Calculate accuracy
+torchmetric_acc_result = torchmetric_acc(y_preds, y_blob_test)
+print(f"\nAccuracy form torchmetrics:\n{torchmetric_acc_result}\n")
 
 
-
-
-
-
-
-# 13_48_09 (PyTorch for Deep Learning & Machine Learning – Full Course)
 debug=1
