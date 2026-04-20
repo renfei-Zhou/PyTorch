@@ -125,7 +125,7 @@ print(f"Length of test_dataloader: {len(test_dataloader)} batches of {BATCH_SIZE
 train_features_batch, train_labels_batch = next(iter(train_dataloader))
 print(f"check first batch's shape: {train_features_batch.shape}, label shape: {train_labels_batch.shape}\n")
 
-# # Show a sample
+# # Show a sample in first batch
 # torch.manual_seed(42)
 # random_idx = torch.randint(0, len(train_features_batch), size=[1]).item()
 # img, label = train_features_batch[random_idx], train_labels_batch[random_idx]
@@ -134,22 +134,24 @@ print(f"check first batch's shape: {train_features_batch.shape}, label shape: {t
 # plt.xlabel(f"Image size: {img.shape}, label: {label}, label size: {label.shape}")
 # plt.show()
 
+# Try plot a batch with {BATCH_SIZE} imgs
+dataloader_iter = iter(train_dataloader)
+random_idx = torch.randint(0, len(train_dataloader), size=[1]).item()
 
+for _ in range(random_idx):
+    next(dataloader_iter)
 
+train_features_batch, train_labels_batch = next(dataloader_iter)
 
-
-
-
-
-
-
-
-
-
-
+plt.figure(figsize=(10,6))
+for i in range(32):
+    plt.subplot(4,8,i+1)
+    img = train_features_batch[i]
+    label = train_labels_batch[i]
+    plt.imshow(img.squeeze(), cmap="gray")
+    plt.title(class_names[label])
+    plt.axis(False)
+plt.suptitle(f"Batch {random_idx+1}")
+plt.show()
 
 debug=1
-# 13_48_09 (PyTorch for Deep Learning & Machine Learning – Full Course)
-# 14_46_03
-# 14_51_41
-# 15_21_15 (2026-04-15)
