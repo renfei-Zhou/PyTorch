@@ -30,7 +30,9 @@ jsonschema-specifications==2025.9.1
 jupyter_client==8.6.3
 jupyter_core==5.8.1
 jupyterlab_pygments==0.3.0
+keyboard==0.13.5
 kiwisolver==1.4.9
+lightning-utilities==0.15.3
 MarkupSafe==3.0.2
 matlab==0.1
 matplotlib==3.10.5
@@ -57,7 +59,7 @@ Pygments==2.19.2
 pyparsing==3.2.3
 python-dateutil==2.9.0.post0
 pytz==2025.2
-pywin32==311
+# pywin32==311
 pyzmq==27.1.0
 referencing==0.36.2
 requests==2.32.5
@@ -73,6 +75,7 @@ sympy==1.14.0
 threadpoolctl==3.6.0
 tinycss2==1.4.0
 torch==2.9.1
+torchmetrics==1.9.0
 torchvision==0.24.1
 tornado==6.5.2
 traitlets==5.14.3
@@ -81,6 +84,6 @@ tzdata==2025.2
 urllib3==2.5.0
 wcwidth==0.2.13
 webencodings==0.5.1
-WMI==1.5.1
+# WMI==1.5.1
 yarg==0.1.9
 yt-dlp==2025.12.8
