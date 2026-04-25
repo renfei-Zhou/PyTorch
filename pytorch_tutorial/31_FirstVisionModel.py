@@ -77,7 +77,7 @@ dummy_result = model_0(dummy_x)
 print(f"test dummy_x:\n {dummy_result}\n"
       f"shape of the result: {dummy_result.shape}\n")
 
-
+print(f"\n\nmodel_0 state_dict: \n{model_0.state_dict()}\n")
 
 
 
