@@ -81,6 +81,120 @@ print(f"\n\nmodel_0 state_dict: \n{model_0.state_dict()}\n")
 
 
 
+#### 3.1 Setup loss, optimizer and evaluation matrics   
+'''
+    Loss function:
+        since we're working with multi-class data, our loss function will be nn.CrossEntropyLoss()
+    Optimizer:
+        our optimizer torch.optim.SGD() (stochastic gradient descent)
+    Evaluaiton matric:
+        since we're working on a classification problem, let's use accuracy as our evaluation metric
+'''
+import requests
+from pathlib import Path
+
+# Download help function form Learn PyTorch repo
+if Path("helper_functions.py").is_file():
+    print("helper_functions.py already exists, skipping download...")
+else:
+    print("Downloading helper_functions.py")
+    request = requests.get("https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/refs/heads/main/helper_functions.py")
+    with open("helper_functions.py", "wb") as f:
+        f.write(request.content)
+
+# Import accuracy metric
+from helper_functions import accuracy_fn
+
+# Setup loss function and optimizer
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(params=model_0.parameters(),
+                            lr=0.1)
+
+
+
+### 3.2 Creating a function to time out our experiments
+'''
+    Machine learning is very experimental.
+
+    Two of the main things you'll often want to track are:
+        1. Model's performance (loss and accuracy values etc)
+        2. How fast it runs
+'''
+from timeit import default_timer as timer
+def print_train_time(start: float,
+                     end: float,
+                     device: torch.device = None):
+    ''' Print difference between start and end time. '''
+    total_time = end - start
+    print(f"Train time on {device}: {total_time:.3f} seconds")
+    return total_time
+
+# # test
+# start_time = timer()
+# import time
+# time.sleep(1)
+# end_time = timer()
+# print_train_time(start_time, end_time, "cpu")
+
+
+
+### 3.3 Creating a training loop and training a model on batches of data
+'''
+    1. Loop through epochs.
+    2. Loop through training batches, perform training steps, calculate the train loss per batch.
+    3. Loop through testing batches, perform testing steps, calculate the test loss per batch.
+    4. Print out what's happening.
+    5. Time it all (for fun).
+'''
+# Import tqdm for progress bar
+from tqdm.auto import tqdm
+
+# Set the seed and start the timer
+torch.manual_seed(42)
+train_time_start_on_cpu = timer()
+
+# Set number of epochs (we'll keep it small for faster training time)
+epochs = 3
+
+# Create training and testing loop
+for epoch in tqdm(range(epochs)):
+    print(f"Epoch: {epoch}\n------")
+    ### Training
+    train_loss = 0
+    # Add a loop to loop through the training batches
+    for batch, (X, y) in enumerate(train_dataloader):
+        model_0.train()
+        # 1. Forward pass
+        y_pred = model_0(X)
+
+        # 2. Calculate the loss (per batch)
+        loss = loss_fn(y_pred, y)
+        train_loss += loss # accumulate train loss
+
+        # 3. Optimizer zero grad
+        optimizer.zero_grad()
+
+        # 4. Loss backward
+        loss.backward()
+
+        # 5. Optimizer step
+        optimizer.step()
+
+        # Print out what's happening
+        if batch % 400 == 0:
+            print(f"Looed at {batch * len(X)}/{len(train_dataloader.dataset)}")
+
+    # Divide total train loss by length of train dataloader
+    train_loss /= len(train_dataloader) 
+
+
+
+
+
+
+
+temporary_end_time = timer()
+print_train_time(train_time_start_on_cpu,temporary_end_time,"cpu")
 
 
 
@@ -91,3 +205,4 @@ debug=1
 # 14_51_41 (2026-04-14)
 # 15_21_15 (2026-04-15)
 # 15_35_55 (2026-04-20)
+# 16_06_00 (2026-04-27)
