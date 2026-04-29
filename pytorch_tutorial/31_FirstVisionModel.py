@@ -218,9 +218,42 @@ total_train_time_model_0 = print_train_time(train_time_start_on_cpu,
                                             str(next(model_0.parameters()).device))
 
 
+### 4. Make predictions and get Model_0 results
+torch.manual_seed(42)
+def eval_model(model: torch.nn.Module,
+               data_loader: torch.utils.data.DataLoader,
+               loss_fn: torch.nn.Module,
+               accuracy_fn):
+    '''
+        Returns a dictionary containing the results of model predicting on data_loader.
+    '''
+    loss, acc = 0, 0
+    model.eval()
+    with torch.inference_mode():
+        for X, y in tqdm(data_loader):
+            # Make predictions
+            y_pred = model(X)
+
+            # Accumulate the loss and acc values per batch
+            loss += loss_fn(y_pred, y)
+            acc += accuracy_fn(y_true=y,
+                               y_pred=y_pred.argmax(dim=1))
+        
+        # Scale loss and acc to find the average loss/acc per batch
+        loss /= len(data_loader)
+        acc /= len(data_loader)
+
+    return {"model_name": model.__class__.__name__, # Only works when model was created with a class
+            "model_loss": loss.item(),
+            "model_acc": acc}
 
 
-
+# Calculate model 0 results on test dataset
+model_0_results = eval_model(model=model_0,
+                             data_loader=test_dataloader,
+                             loss_fn=loss_fn,
+                             accuracy_fn=accuracy_fn) 
+print(model_0_results)
 
 
 debug=1
@@ -230,4 +263,4 @@ debug=1
 # 15_21_15 (2026-04-15)
 # 15_35_55 (2026-04-20)
 # 16_06_00 (2026-04-27)
-# 16_13_29 (2026-04-29)
+# 16_25_08 (2026-04-29)
