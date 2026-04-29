@@ -187,14 +187,38 @@ for epoch in tqdm(range(epochs)):
     # Divide total train loss by length of train dataloader
     train_loss /= len(train_dataloader) 
 
+    ### Testing
+    test_loss, test_acc = 0, 0
+    model_0.eval()
+    with torch.inference_mode():
+        for X_test, y_test in test_dataloader:
+            # 1. Forward pass
+            test_pred = model_0(X_test)
+
+            # 2. Calculate the loss (accumulatively)
+            test_loss += loss_fn(test_pred, y_test)
+
+            # 3. Calculate accuracy
+            test_acc += accuracy_fn(y_true=y_test,
+                                    y_pred=test_pred.argmax(dim=1))
+            
+        # Calcualte the test loss average per batch
+        test_loss /= len(test_dataloader)
+
+        # Cauclate the test acc average per batch
+        test_acc /= len(test_dataloader)
+
+    # Pring out what's happening
+    print(f"\nTrain loss: {train_loss:.4f}  |   Test loss: {test_loss:.4f}   |   Test acc: {test_acc:.4f}")
+
+# Calculate train time
+train_time_end_on_cpu = timer()
+total_train_time_model_0 = print_train_time(train_time_start_on_cpu, 
+                                            train_time_end_on_cpu, 
+                                            str(next(model_0.parameters()).device))
 
 
 
-
-
-
-temporary_end_time = timer()
-print_train_time(train_time_start_on_cpu,temporary_end_time,"cpu")
 
 
 
@@ -206,3 +230,4 @@ debug=1
 # 15_21_15 (2026-04-15)
 # 15_35_55 (2026-04-20)
 # 16_06_00 (2026-04-27)
+# 16_13_29 (2026-04-29)
