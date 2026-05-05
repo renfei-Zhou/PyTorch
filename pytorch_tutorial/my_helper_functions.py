@@ -110,22 +110,6 @@ def accuracy_fn(y_true, y_pred):
     return acc
 
 
-def print_train_time(start, end, device=None):
-    """Prints difference between start and end time.
-
-    Args:
-        start (float): Start time of computation (preferred in timeit format). 
-        end (float): End time of computation.
-        device ([type], optional): Device that compute is running on. Defaults to None.
-
-    Returns:
-        float: time between start and end in seconds (higher is longer).
-    """
-    total_time = end - start
-    print(f"\nTrain time on {device}: {total_time:.3f} seconds")
-    return total_time
-
-
 # Plot loss curves of a model
 def plot_loss_curves(results):
     """Plots training curves of a results dictionary.
@@ -292,3 +276,87 @@ def download_data(source: str,
             os.remove(data_path / target_file)
     
     return image_path
+
+
+# Function to time out our experiments
+def print_train_time(start: float,
+                     end: float,
+                     device: torch.device):
+    ''' Print difference between start and end time. '''
+    total_time = end - start
+    print(f"Train time on {device}: {total_time:.3f} seconds")
+    return total_time
+
+
+# Functionized training loops
+def train_step(model: torch.nn.Module,
+               data_loader: torch.utils.data.DataLoader,
+               loss_fn: torch.nn.Module,
+               optimizer: torch.optim.Optimizer,
+               accuracy_fn,
+               device: torch.device):
+    ''' Performs a training with model trying to learn on data_loader. '''
+    train_loss, train_acc = 0, 0
+
+    # Put model into training mode
+    model.train()
+
+    # Add a loop to loop through the training batches
+    for batch, (X,y) in enumerate(data_loader):
+        # Put data on target device
+        X, y = X.to(device), y.to(device)
+
+        # 1. Forward pass (outputs the raw logits from the model)
+        y_pred = model(X)
+
+        # 2. Calculate loss and accuracy (per batch)
+        loss = loss_fn(y_pred, y)
+        train_loss += loss # accumulate train loss
+        train_acc += accuracy_fn(y_true=y,
+                                 y_pred=y_pred.argmax(dim=1)) # go from logits -> prediction labels
+        
+        # 3. Optimizer zero grad
+        optimizer.zero_grad()
+
+        # 4. Loss backward
+        loss.backward()
+
+        # 5. Optimizer step (update the model's parameters once *per batch*)
+        optimizer.step()
+
+    # Divide total train loss and acc by length of train dataloader
+    train_loss /= len(data_loader)
+    train_acc /= len(data_loader)
+    print(f"Train loss: {train_loss:.5f} | Train_acc: {train_acc:.2f}%")
+
+
+# Functionized testing loops
+def test_step(model: torch.nn.Module,
+              data_loader: torch.utils.data.DataLoader,
+              loss_fn: torch.nn.Module,
+              accuracy_fn,
+              device: torch.device):
+    """ Perfroms a testing loop step on model going over data_loader. """
+    test_loss, test_acc = 0, 0
+    
+    # Put the model in eval mode
+    model.eval()
+
+    # Turn on inference mode context manager
+    with torch.inference_mode():
+        for X,y in data_loader:
+            # Send the data to the target device
+            X, y = X.to(device), y.to(device)
+
+            # 1. Forward pass (outputs raw logits)
+            test_pred = model(X)
+
+            # 2. Calculate the loss/acc
+            test_loss += loss_fn(test_pred, y)
+            test_acc += accuracy_fn(y_true=y,
+                                    y_pred=test_pred.argmax(dim=1)) # go from logits -> prediction labels
+
+        # Adjust metrics and print out 
+        test_loss /= len(data_loader)
+        test_acc /= len(data_loader)
+        print(f"Test loss: {test_loss:.5f} | Test acc: {test_acc:.2f}%\n")

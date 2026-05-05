@@ -255,12 +255,4 @@ model_0_results = eval_model(model=model_0,
                              accuracy_fn=accuracy_fn) 
 print(model_0_results)
 
-
 debug=1
-# 13_48_09 (PyTorch for Deep Learning & Machine Learning – Full Course)
-# 14_46_03
-# 14_51_41 (2026-04-14)
-# 15_21_15 (2026-04-15)
-# 15_35_55 (2026-04-20)
-# 16_06_00 (2026-04-27)
-# 16_25_08 (2026-04-29)
