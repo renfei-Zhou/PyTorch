@@ -187,11 +187,15 @@ for epoch in tqdm(range(epochs)):
     # Divide total train loss by length of train dataloader
     train_loss /= len(train_dataloader) 
 
+    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu" 
+
     ### Testing
     test_loss, test_acc = 0, 0
     model_0.eval()
     with torch.inference_mode():
         for X_test, y_test in test_dataloader:
+            # Make our data device agnostic
+            X, y = X.to(device), y.to(device)
             # 1. Forward pass
             test_pred = model_0(X_test)
 
@@ -231,6 +235,8 @@ def eval_model(model: torch.nn.Module,
     model.eval()
     with torch.inference_mode():
         for X, y in tqdm(data_loader):
+            # Make our data device agnostic
+            X, y = X.to(device), y.to(device)
             # Make predictions
             y_pred = model(X)
 

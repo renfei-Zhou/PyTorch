@@ -6,7 +6,7 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 from timeit import default_timer as timer
 from tqdm.auto import tqdm
-from my_helper_functions import accuracy_fn, print_train_time
+from my_helper_functions import accuracy_fn, print_train_time, eval_model
 # Necessary data -------------------------------------
 torch.manual_seed(42)
 # Setup training data
@@ -169,6 +169,25 @@ for epoch in tqdm(range(epochs)):
 
 train_time_end_on_GPU = timer()
 total_train_time_model_1 = print_train_time(train_time_start_on_GPU, train_time_end_on_GPU, device)
+
+
+
+# Get model_1 results dictionary
+model_1_results = eval_model(model=model_1,
+                             data_loader=test_dataloader,
+                             loss_fn=loss_fn,
+                             accuracy_fn=accuracy_fn,
+                             device=device)
+print(f"\nmodel_1_results: {model_1_results}\n")
+
+
+
+
+
+
+
+
+
 
 
 
