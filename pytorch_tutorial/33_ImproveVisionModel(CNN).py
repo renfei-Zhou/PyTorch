@@ -73,7 +73,7 @@ class FashionMNISTModelV2(nn.Module):
         )
 
     def forward(self, x):
-
+        
 
 
 
