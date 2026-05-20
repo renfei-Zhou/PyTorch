@@ -57,7 +57,7 @@ class FashionMNISTModelV2(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2)
         )
-        self.nn_block_2 = nn.Sequential(
+        self.conv_block_2 = nn.Sequential(
             nn.Conv2d(in_channels=hidden_units,
                       out_channels=hidden_units,
                       kernel_size=3,
@@ -73,7 +73,10 @@ class FashionMNISTModelV2(nn.Module):
         )
 
     def forward(self, x):
-        
+        x = self.conv_block_1(x)
+        print(f"shape for conv_block_1: {x.shape}")
+        x = self.conv_block_2(x)
+        print(f"shape for conv_block_2: {x.shape}")
 
 
 
@@ -89,5 +92,4 @@ debug=1
 # 16_06_00 (2026-04-27)
 # 16_25_08 (2026-04-29)
 # 17_09_23 (2026-05-05)
-# test: now using macbook for next coding
 # 17_37_23 (2026-05-13)
