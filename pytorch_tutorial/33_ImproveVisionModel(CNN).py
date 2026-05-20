@@ -48,9 +48,9 @@ class FashionMNISTModelV2(nn.Module):
                       kernel_size=3, # 3x3 is the most common kernel size
                       stride=1, # how many pixels the kernel moves at a time
                       padding=1), # Values we can set ourselves in our NN's are called HYPERparameters
-            nn.Relu(),
-            nn.Conv2d(inchannels=hidden_units,
-                      outchannels=hidden_units,
+            nn.ReLU(),
+            nn.Conv2d(in_channels=hidden_units,
+                      out_channels=hidden_units,
                       kernel_size=3,
                       stride=1,
                       padding=1),
@@ -68,7 +68,7 @@ class FashionMNISTModelV2(nn.Module):
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.linear(in_features=hidden_units*0,
+            nn.Linear(in_features=hidden_units*0, # there's a trick to calculate this...
                       out_features=output_shape)
         )
 
@@ -77,8 +77,14 @@ class FashionMNISTModelV2(nn.Module):
         print(f"shape for conv_block_1: {x.shape}")
         x = self.conv_block_2(x)
         print(f"shape for conv_block_2: {x.shape}")
+        x = self.classifier(x)
+        print(f"shape for classifier: {x.shape}")
+        return x
+    
 
-
+model_2 = FashionMNISTModelV2(input_shape=1, 
+                              hidden_units=10, 
+                              output_shape=len(class_names)).to(device)
 
 
 
