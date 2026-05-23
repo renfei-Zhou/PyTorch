@@ -89,11 +89,29 @@ model_2 = FashionMNISTModelV2(input_shape=1,
 
 
 ### 7.1 Setting through nn.Conv2d()
-a=1
+# Create a batch of images
+images = torch.randn(size=(32, 3, 64, 64))
+test_image = images[0]
+
+print(f"Image batch shape: {images.shape}")
+print(f"Single image shape: {test_image.shape}")
+print(f"Test image:\n{test_image}")
+
+
+# Create a single conv2d layer
+conv_layer = nn.Conv2d(in_channels=3,       # input = 3 channels(RGB)
+                       out_channels=10,     # output = 10 characteristic pictures
+                       kernel_size=(3, 3),  # using 3*3 window to scan the picture
+                       stride=1,            # moving 1 pixil per time
+                       padding=0)           # no compensation for around
+
+# Pass the data through the convolutional layer
+conv_output = conv_layer(test_image.unsqueeze(0))
+print(conv_output.shape)
 
 
 
-
+### 7.2 Stepping through [nn.MaxPool2d]
 
 
 
