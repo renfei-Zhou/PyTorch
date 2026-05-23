@@ -88,6 +88,15 @@ model_2 = FashionMNISTModelV2(input_shape=1,
 
 
 
+### 7.1 Setting through nn.Conv2d()
+
+
+
+
+
+
+
+
 
 
 debug=1
@@ -99,3 +108,4 @@ debug=1
 # 16_25_08 (2026-04-29)
 # 17_09_23 (2026-05-05)
 # 17_37_23 (2026-05-13)
+# 17_44_05 (2026-05-20)
