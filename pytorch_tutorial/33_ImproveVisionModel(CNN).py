@@ -89,8 +89,7 @@ model_2 = FashionMNISTModelV2(input_shape=1,
 
 
 ### 7.1 Setting through nn.Conv2d()
-
-
+a=1
 
 
 
