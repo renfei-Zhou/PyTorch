@@ -68,17 +68,17 @@ class FashionMNISTModelV2(nn.Module):
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(in_features=hidden_units*0, # there's a trick to calculate this...
+            nn.Linear(in_features=hidden_units*7*7, # there's a trick to calculate this...
                       out_features=output_shape)
         )
 
     def forward(self, x):
         x = self.conv_block_1(x)
-        print(f"shape for conv_block_1: {x.shape}")
+        # print(f"shape for conv_block_1: {x.shape}")
         x = self.conv_block_2(x)
-        print(f"shape for conv_block_2: {x.shape}")
+        # print(f"shape for conv_block_2: {x.shape}")
         x = self.classifier(x)
-        print(f"shape for classifier: {x.shape}")
+        # print(f"shape for classifier: {x.shape}")
         return x
     
 
@@ -103,7 +103,7 @@ conv_layer = nn.Conv2d(in_channels=3,       # input = 3 channels(RGB)
                        out_channels=10,     # output = 10 characteristic pictures
                        kernel_size=(3, 3),  # using 3*3 window to scan the picture
                        stride=1,            # moving 1 pixil per time
-                       padding=0)           # no compensation for around
+                       padding=1)           # 填充：给图像四周补一圈 0，让输出尺寸和输入一样
 
 # Pass the data through the convolutional layer
 conv_output = conv_layer(test_image.unsqueeze(0))
@@ -112,6 +112,79 @@ print(conv_output.shape)
 
 
 ### 7.2 Stepping through [nn.MaxPool2d]
+# Print out original image shape without unsqueezed dimension
+print(f"Test image original shape: {test_image.shape}")
+print(f"Test image with unsqueezed dimension: {test_image.unsqueeze(0).shape}")
+
+# Create a sample nn.MaxPool2d layer
+max_pool_layer = nn.MaxPool2d(kernel_size=2)
+
+# Pass data through just the conv_layer
+test_image_through_conv = conv_layer(test_image.unsqueeze(dim=0))
+print(f"Shape after going through conv_layer(): {test_image_through_conv.shape}")
+
+# Pass data through the max pool layer
+test_image_through_conv_and_max_pool = max_pool_layer(test_image_through_conv)
+print(f"Shape after going through conv_layer() and max_pool_layer(): {test_image_through_conv_and_max_pool.shape}")
+
+
+# Getting more familiar with maxPool2d:
+# Create a random tensor with a similar number of dimensions to our images
+random_tensor = torch.randn(size=(1,1,2,2))
+print(f"\nRandom tensor:\n{random_tensor}")
+print(f"\nRandom tensor shape:\n{random_tensor.shape}")
+
+# Create a max pool layer
+max_pool_layer = nn.MaxPool2d(kernel_size=2)
+
+# Pass the random tensor through the max pool layer
+max_pool_tensor = max_pool_layer(random_tensor)
+print(f"\nMax pool tensor:\n {max_pool_tensor}")
+print(f"Max pool tensor shape: {max_pool_tensor.shape}")
+
+
+
+### 7.3 Setup a loss function and optimizer for model_2
+# Setup loss function/eval metrics/optimizer
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(params=model_2.parameters(),
+                            lr=0.1)
+
+
+### 7.4 Training and testing model_2 using our training and test functions
+# Measure time
+train_time_start_model_2 = timer()
+
+# Train and test model
+epochs = 3
+for epoch in tqdm(range(epochs)):
+    print(f"Epoch: {epoch}\n--------")
+    train_step(model=model_2,
+               data_loader=train_dataloader,
+               loss_fn=loss_fn,
+               optimizer=optimizer,
+               accuracy_fn=accuracy_fn,
+               device=device)
+    test_step(model=model_2,
+              data_loader=test_dataloader,
+              loss_fn=loss_fn,
+              accuracy_fn=accuracy_fn,
+              device=device)
+    
+train_time_end_model_2 = timer()
+total_train_time_model_2 = print_train_time(train_time_start_model_2,
+                                            train_time_end_model_2,
+                                            device=device)
+
+# Get model_2 results
+model_2_results = eval_model(
+    model=model_2,
+    data_loader=test_dataloader,
+    loss_fn=loss_fn,
+    accuracy_fn=accuracy_fn,
+    device=device
+)
+print(f"model_2 results: {model_2_results}")
 
 
 
