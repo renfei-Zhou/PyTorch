@@ -30,5 +30,6 @@ replace everything with:
     "editor.snippetSuggestions": "none",
     "javascript.suggest.autoImports": false,
     "typescript.suggest.autoImports": false,
-    "workbench.colorTheme": "Dark Modern"
+    "workbench.colorTheme": "Dark Modern",
+    "editor.fontSize": 16
 }
