@@ -7,6 +7,8 @@ from torchvision.transforms import ToTensor
 from timeit import default_timer as timer
 from tqdm.auto import tqdm
 from my_helper_functions import accuracy_fn, print_train_time, train_step, test_step, eval_model
+import pandas as pd
+import json
 # Necessary data -------------------------------------
 torch.manual_seed(42)
 # Setup training data
@@ -184,7 +186,17 @@ model_2_results = eval_model(
     accuracy_fn=accuracy_fn,
     device=device
 )
+
+model_2_results["total_training_time"] = total_train_time_model_2
 print(f"model_2 results: {model_2_results}")
+
+
+# save results
+with open("model_2_results.json", "w", encoding="utf-8") as f:
+    json.dump(model_2_results, f, ensure_ascii=False, indent=4)
+
+print("✅ model_2 结果已保存到 model_2_results.json")
+
 
 
 
@@ -200,3 +212,4 @@ debug=1
 # 17_37_23 (2026-05-13)
 # 17_44_05 (2026-05-20)
 # 18_37_00 (2026-05-23)
+# 18_44_20 (2026-05-24)

@@ -93,17 +93,17 @@ print(f"\n\nmodel_0 state_dict: \n{model_0.state_dict()}\n")
 import requests
 from pathlib import Path
 
-# Download help function form Learn PyTorch repo
-if Path("helper_functions.py").is_file():
-    print("helper_functions.py already exists, skipping download...")
-else:
-    print("Downloading helper_functions.py")
-    request = requests.get("https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/refs/heads/main/helper_functions.py")
-    with open("helper_functions.py", "wb") as f:
-        f.write(request.content)
+# # Download help function form Learn PyTorch repo
+# if Path("helper_functions.py").is_file():
+#     print("helper_functions.py already exists, skipping download...")
+# else:
+#     print("Downloading helper_functions.py")
+#     request = requests.get("https://raw.githubusercontent.com/mrdbourke/pytorch-deep-learning/refs/heads/main/helper_functions.py")
+#     with open("helper_functions.py", "wb") as f:
+#         f.write(request.content)
 
 # Import accuracy metric
-from helper_functions import accuracy_fn
+from my_helper_functions import accuracy_fn
 
 # Setup loss function and optimizer
 loss_fn = nn.CrossEntropyLoss()
@@ -258,7 +258,17 @@ def eval_model(model: torch.nn.Module,
 model_0_results = eval_model(model=model_0,
                              data_loader=test_dataloader,
                              loss_fn=loss_fn,
-                             accuracy_fn=accuracy_fn) 
+                             accuracy_fn=accuracy_fn)
+
+model_0_results["total_training_time"] = total_train_time_model_0
 print(model_0_results)
+
+
+# save results
+import json
+with open("model_0_results.json", "w", encoding="utf-8") as f:
+    json.dump(model_0_results, f, ensure_ascii=False, indent=4)
+
+print("✅ model_0 结果已保存到 model_0_results.json")
 
 debug=1

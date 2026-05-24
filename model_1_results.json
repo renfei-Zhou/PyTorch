@@ -1,0 +1,6 @@
+{
+    "model_name": "FashionMNISTModelV1",
+    "model_loss": 0.4927983283996582,
+    "model_acc": 82.57787539936102,
+    "total_training_time": 14.067985199999839
+}

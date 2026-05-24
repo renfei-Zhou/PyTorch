@@ -178,6 +178,17 @@ model_1_results = eval_model(model=model_1,
                              loss_fn=loss_fn,
                              accuracy_fn=accuracy_fn,
                              device=device)
+
+model_1_results["total_training_time"] = total_train_time_model_1
 print(f"\nmodel_1_results: {model_1_results}\n")
+
+
+# save results
+import json
+with open("model_1_results.json", "w", encoding="utf-8") as f:
+    json.dump(model_1_results, f, ensure_ascii=False, indent=4)
+
+print("✅ model_1 结果已保存到 model_1_results.json")
+
 
 debug=1
