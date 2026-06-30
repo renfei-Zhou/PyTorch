@@ -9,6 +9,7 @@ from tqdm.auto import tqdm
 from my_helper_functions import accuracy_fn, print_train_time, train_step, test_step, eval_model
 import pandas as pd
 import json
+import matplotlib.pyplot as plt
 # Necessary data -------------------------------------
 torch.manual_seed(42)
 # Setup training data
@@ -200,6 +201,90 @@ print("✅ model_2 结果已保存到 model_2_results.json")
 
 
 
+### 8. Compare model results and train time
+with open("model_0_results.json", "r", encoding="utf-8") as f:
+    model_0_results = json.load(f)
+
+with open("model_1_results.json", "r", encoding="utf-8") as f:
+    model_1_results = json.load(f)
+
+with open("model_2_results.json", "r", encoding="utf-8") as f:
+    model_2_results = json.load(f)
+
+compare_results = pd.DataFrame([model_0_results,
+                                model_1_results,
+                                model_2_results])
+
+print(f"compare results:\n", compare_results.to_string())
+
+# Visualize our model results
+compare_results.set_index("model_name")["model_acc"].plot(kind="barh")
+plt.xlabel("accuracy (%)")
+plt.ylabel("model")
+plt.show()
+
+
+
+### 9. Make and evaluate random predictions with best model
+def make_predictions(model: torch.nn.Module,
+                     data: list,
+                     device: torch.device = device):
+    pred_probs = []
+    model.to(device)
+    model.eval()
+    with torch.inference_mode():
+        for sample in data:
+            # Prepare the sample (add a batch dimension and pass to target device)
+            sample = torch.unsqueeze(sample, dim=0).to(device)
+
+            # Forward pass (model outputs raw logits)
+            pred_logit = model(sample)
+
+            # Get prediction probability (logit -> prediction probability)
+            pred_prob = torch.softmax(pred_logit.squeeze(), dim=0)
+
+            # Get pred_prob off the GPU for further calculations
+            pred_probs.append(pred_prob.cpu())
+
+    # Stack the pred_probs to turn list into a tensor
+    return torch.stack(pred_probs)
+
+
+import random
+random.seed(42)
+test_samples = []
+test_labels = []
+for sample, label in random.sample(list(test_data), k=9):
+    test_samples.append(sample)
+    test_labels.append(label)
+
+    # View the first sample shape
+    shape_test_samples = test_samples[0].shape
+    # plt.imshow(test_samples[0].squeeze(), cmap="gray")
+    # plt.title(class_names[test_labels[0]])
+    # plt.show()
+
+
+# Make predictions 
+pred_probs = make_predictions(model=model_2,
+                              data=test_samples)
+
+# View the first two prediction probabilities
+check_first_two_pred_probs = pred_probs[:2]
+
+# Cenvert prediciton probabilities to labels
+pred_classes = pred_probs.argmax(dim=1)
+
+
+
+
+
+
+
+
+
+
+
 
 debug=1
 # 13_48_09 (PyTorch for Deep Learning & Machine Learning – Full Course)
@@ -213,3 +298,4 @@ debug=1
 # 17_44_05 (2026-05-20)
 # 18_37_00 (2026-05-23)
 # 18_44_20 (2026-05-24)
+# 18_56_00 (2026-06-30)
