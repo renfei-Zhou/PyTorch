@@ -276,8 +276,33 @@ check_first_two_pred_probs = pred_probs[:2]
 pred_classes = pred_probs.argmax(dim=1)
 
 
+# Plot predictions
+plt.figure(figsize=(9, 9))
+nrows = 3
+ncols = 3
+for i, sample in enumerate(test_samples):
+    # Create subplot 
+    plt.subplot(nrows, ncols, i+1)
 
+    # Plot the target image
+    plt.imshow(sample.squeeze(), cmap="gray")
 
+    # Find the prediction (in test form, e.g. "Sandal")
+    pred_label = class_names[pred_classes[i]]
+
+    # Get the truth label (in test form)
+    truth_label = class_names[test_labels[i]]
+
+    # Create a title for the plot
+    title_text = f"Pred: {pred_label}   |   Truth: {truth_label}"
+
+    # Check for equality between pred and truth and change color of title text
+    if pred_label == truth_label:
+        plt.title(title_text, fontsize=10, c="g") # green text if prediction same as truth
+    else:
+        plt.title(title_text, fontsize=10, c="r")
+    plt.axis(False)
+plt.show()
 
 
 
@@ -299,3 +324,4 @@ debug=1
 # 18_37_00 (2026-05-23)
 # 18_44_20 (2026-05-24)
 # 18_56_00 (2026-06-30)
+# 19_04_13 (2026-07-01)
