@@ -10,6 +10,9 @@ from my_helper_functions import accuracy_fn, print_train_time, train_step, test_
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
+import torchmetrics, mlxtend
+
+
 # Necessary data -------------------------------------
 torch.manual_seed(42)
 # Setup training data
@@ -306,7 +309,38 @@ plt.show()
 
 
 
+### 10. Making a confusion matrix for further prediction evaluation
+'''
+A confusion matrix is a fantastic way of evaluating your classification models visually:
+https://www.learnpytorch.io/02_pytorch_classification/#9-more-classification-evaluation-metrics
 
+1. Make predictions with our trained model on the data set
+2. Make a confusion matrix 'torchmatrics.ConfusionMatrix'
+3. Plot the confusion matrix using 'mixtend.plotting.plot_confusion_matrix()'
+'''
+
+# 1. Make predictions with trained model
+y_preds = []
+model_2.eval()
+with torch.inference_mode():
+    for X, y in tqdm(test_dataloader, desc="Making predictions..."):
+        # Send data and targets to target device
+        X, y = X.to(device), y.to(device)
+        # Do the forward pass
+        y_logit = model_2(X)
+        # Turn predictions from logits -> prediction probabilities -> prediction labels
+        y_pred = torch.softmax(y_logit.squeeze(), dim=0).argmax(dim=1)
+        # Put prediction on CPU for evaluation
+        y_preds.append(y_pred.cpu())
+
+# Concatenate list of predictions into a tonsor
+print(y_preds)
+y_pred_tensor = torch.cat(y_preds)
+check_first_10_y_pred_tensor = y_pred_tensor[:10]
+len_y_pred_tensor = len(y_pred_tensor)
+
+# import torchmetrics, mlxtend
+print(f"mlxtend version: {mlxtend.__version__}")
 
 
 
@@ -325,3 +359,4 @@ debug=1
 # 18_44_20 (2026-05-24)
 # 18_56_00 (2026-06-30)
 # 19_04_13 (2026-07-01)
+# 19_19_01 (2026-07-01)
