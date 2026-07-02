@@ -24,7 +24,7 @@ class_names = train_data.classes
 BATCH_SIZE = 32
 # Turn dataset into iterables (batches)
 train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
-test_dataloader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=True)
+test_dataloader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=False)
 # Setup iterable
 train_features_batch, train_labels_batch = next(iter(train_dataloader))
 # Device
@@ -329,7 +329,7 @@ with torch.inference_mode():
         # Do the forward pass
         y_logit = model_2(X)
         # Turn predictions from logits -> prediction probabilities -> prediction labels
-        y_pred = torch.softmax(y_logit.squeeze(), dim=0).argmax(dim=1)
+        y_pred = torch.softmax(y_logit, dim=1).argmax(dim=1)
         # Put prediction on CPU for evaluation
         y_preds.append(y_pred.cpu())
 
@@ -341,6 +341,27 @@ len_y_pred_tensor = len(y_pred_tensor)
 
 # import torchmetrics, mlxtend
 print(f"mlxtend version: {mlxtend.__version__}")
+
+from torchmetrics import ConfusionMatrix
+from mlxtend.plotting import plot_confusion_matrix
+
+# 2. Setup confusion instance and compare predictions to targets 
+confmat = ConfusionMatrix(task="multiclass", num_classes=len(class_names))
+confmat_tensor = confmat(preds=y_pred_tensor,
+                         target=test_data.targets)
+
+# 3. Plot the confusion matirx
+fig, axis = plot_confusion_matrix(
+    conf_mat=confmat_tensor.numpy(), # matpllotlib likes working with numpy
+    class_names=class_names,
+    figsize=(10,7)
+)
+plt.show()
+
+
+
+
+
 
 
 
@@ -360,3 +381,4 @@ debug=1
 # 18_56_00 (2026-06-30)
 # 19_04_13 (2026-07-01)
 # 19_19_01 (2026-07-01)
+# 19_26_13 (2026-07-01)
