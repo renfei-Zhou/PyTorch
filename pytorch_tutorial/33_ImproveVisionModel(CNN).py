@@ -360,7 +360,58 @@ plt.show()
 
 
 
+# 11. Save and load best performing model
+from pathlib import Path
 
+# Create model dictory path
+MODEL_PATH = Path("models")
+MODEL_PATH.mkdir(parents=True,
+                 exist_ok=True)
+
+# Create model save
+MODEL_NAME = "03_pytorch_computer_version_model_2.pth"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
+
+# Save the model state dict
+print(f"Saving model to: {MODEL_SAVE_PATH}")
+torch.save(obj=model_2.state_dict(),
+           f=MODEL_SAVE_PATH)
+
+# Create a new instance
+loaded_model_2 = FashionMNISTModelV2(input_shape=1,
+                                     hidden_units=10,
+                                     output_shape=len(class_names))
+
+# Load in the save state_dict()
+loaded_model_2.load_state_dict(torch.load(f=MODEL_SAVE_PATH))
+
+# Send the model to the target device
+loaded_model_2.to(device)
+
+
+# Evaluate loaded model
+torch.manual_seed(42)
+
+loaded_model_2_results = eval_model(
+    model=loaded_model_2,
+    data_loader=test_dataloader,
+    loss_fn=loss_fn,
+    accuracy_fn=accuracy_fn,
+    device=device
+)
+
+print(f"Results of loaded model_2: ", loaded_model_2_results)
+
+
+# Check if the loaded results match the original model_2 results (within tolerance)
+# model_2_results comes from 33/34 (model_2_results.json)
+import json
+with open("model_2_results.json", "r", encoding="utf-8") as f:
+    model_2_results = json.load(f)
+
+print(torch.isclose(torch.tensor(model_2_results["model_loss"]),
+                    torch.tensor(loaded_model_2_results["model_loss"]),
+                    atol=1e-02))  # absolute tolerance
 
 
 
@@ -381,4 +432,5 @@ debug=1
 # 18_56_00 (2026-06-30)
 # 19_04_13 (2026-07-01)
 # 19_19_01 (2026-07-01)
-# 19_26_13 (2026-07-01)
+# 19_26_13 (2026-07-02)
+# 19_35_35 (2026-07-03)
