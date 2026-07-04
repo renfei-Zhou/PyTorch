@@ -1,3 +1,6 @@
+# Linux 环境依赖 (Python 3.12.9, CPU 版 PyTorch)
+# 用法: pip install -r requirements_linux.txt
+--extra-index-url https://download.pytorch.org/whl/cpu
 asttokens==3.0.0
 attrs==25.3.0
 backcall==0.2.0
@@ -18,26 +21,27 @@ filelock==3.20.0
 fonttools==4.59.2
 fsspec==2025.10.0
 gitdb==4.0.12
-GitPython==3.1.45
+gitpython==3.1.45
 idna==3.10
 ipython==8.12.3
-ipython_pygments_lexers==1.1.1
+ipython-pygments-lexers==1.1.1
 jedi==0.19.2
-Jinja2==3.1.6
+jinja2==3.1.6
 joblib==1.5.2
 jsonschema==4.25.1
 jsonschema-specifications==2025.9.1
-jupyter_client==8.6.3
-jupyter_core==5.8.1
-jupyterlab_pygments==0.3.0
+jupyter-client==8.6.3
+jupyter-core==5.8.1
+jupyterlab-pygments==0.3.0
 keyboard==0.13.5
 kiwisolver==1.4.9
 lightning-utilities==0.15.3
-MarkupSafe==3.0.2
+markupsafe==3.0.2
 matlab==0.1
 matplotlib==3.10.5
 matplotlib-inline==0.1.7
 mistune==3.1.4
+mlxtend==0.23.4
 mpmath==1.3.0
 nbclient==0.10.2
 nbconvert==7.16.6
@@ -48,18 +52,23 @@ packaging==25.0
 pandas==2.3.2
 pandocfilters==1.5.1
 parso==0.8.5
+pexpect==4.9.0
 pickleshare==0.7.5
 pillow==11.3.0
-pipreqs
+pip==26.1.2
+pipreqs==0.5.0
 platformdirs==4.4.0
-prompt_toolkit==3.0.52
-pure_eval==0.2.3
+prompt-toolkit==3.0.52
+ptyprocess==0.7.0
+pure-eval==0.2.3
 pygad==3.5.0
-Pygments==2.19.2
+pygments==2.19.2
 pyparsing==3.2.3
+pyqt5==5.15.11
+pyqt5-qt5==5.15.19
+pyqt5-sip==12.18.0
 python-dateutil==2.9.0.post0
 pytz==2025.2
-# pywin32==311
 pyzmq==27.1.0
 referencing==0.36.2
 requests==2.32.5
@@ -74,17 +83,17 @@ stack-data==0.6.3
 sympy==1.14.0
 threadpoolctl==3.6.0
 tinycss2==1.4.0
-torch==2.9.1
+torch==2.9.1+cpu
+torchinfo==1.8.0
 torchmetrics==1.9.0
-torchvision==0.24.1
+torchvision==0.24.1+cpu
 tornado==6.5.2
-traitlets==5.14.3
 tqdm==4.67.3
-typing_extensions==4.15.0
+traitlets==5.14.3
+typing-extensions==4.15.0
 tzdata==2025.2
 urllib3==2.5.0
 wcwidth==0.2.13
 webencodings==0.5.1
-# WMI==1.5.1
 yarg==0.1.9
 yt-dlp==2025.12.8
