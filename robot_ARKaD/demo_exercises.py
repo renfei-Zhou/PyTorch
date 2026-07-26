@@ -5,7 +5,11 @@
 
 import numpy as np
 
-from arkad import ch2, ch3, ch4, ch56, ch789
+import ch2_orientation as ch2
+import ch3_direct_kinematics as ch3
+import ch4_inverse_kinematics as ch4
+import ch56_jacobian as ch56
+import ch789_dynamics as ch789
 
 np.set_printoptions(precision=4, suppress=True, linewidth=110)
 

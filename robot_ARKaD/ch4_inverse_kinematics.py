@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ch2_orientation import euler_zyz_current
+from ch2_orientation import euler_zyz_current
 
 
 # ============================================================================

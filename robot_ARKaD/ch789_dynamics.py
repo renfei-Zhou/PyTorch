@@ -27,8 +27,8 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .ch2_orientation import skew
-from .ch56_jacobian import com_jacobians
+from ch2_orientation import skew
+from ch56_jacobian import com_jacobians
 
 
 @dataclass

@@ -31,7 +31,7 @@ from dataclasses import dataclass, replace
 
 import numpy as np
 
-from .ch2_orientation import T_inverse  # noqa: F401  (re-export, 常用)
+from ch2_orientation import T_inverse  # noqa: F401  (re-export, 常用)
 
 
 @dataclass
@@ -196,7 +196,7 @@ def planar_rp_fk(theta10: float, d21: float, l10: float = 1.0,
     ⁰r_{20,00} = [ c1·l10 − s1·d21 ,  s1·l10 + c1·d21 ]ᵀ
     ψ          = θ10 + θ21
     """
-    from .ch2_orientation import homogeneous, rot_z
+    from ch2_orientation import homogeneous, rot_z
 
     c1, s1 = np.cos(theta10), np.sin(theta10)
     p = np.array([c1 * l10 - s1 * d21,
